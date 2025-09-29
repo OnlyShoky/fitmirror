@@ -1,1 +1,38 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Variables */
+:root {
+  --primary-color: #1a365d; /* Deep navy */
+  --secondary-color: #c89b3c; /* Gold accent */
+  --accent-color: #2d5aa0; /* Royal blue */
+  --text-color: #2d3748;
+  --light-color: #f8f9fa;
+  --dark-color: #1a202c;
+  --gray-light: #e2e8f0;
+  --gray-medium: #a0aec0;
+  --border-radius: 12px;
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s ease;
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--light-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Import Font Awesome */
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';

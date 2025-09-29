@@ -1,0 +1,16 @@
+<!-- Try On Button -->
+<div class="try-on-container">
+  <button class="try-on-btn" [disabled]="!canTryOn" (click)="tryOn()">Try On</button>
+</div>
+
+<!-- Loading Animation -->
+<div class="loading-container" *ngIf="loading">
+  <div class="spinner"></div>
+  <p class="loading-text">Processing your virtual try-on...</p>
+</div>
+
+<!-- Result Section -->
+<div class="result-section" *ngIf="resultImage">
+  <h2 class="result-title">Your Virtual Try-On Result</h2>
+  <img [src]="resultImage" class="result-image" alt="Virtual try-on result">
+</div>

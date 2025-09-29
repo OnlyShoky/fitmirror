@@ -1,0 +1,81 @@
+:host {
+  display: block;
+}
+
+.donation-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #2d3748 100%);
+  color: white;
+  text-align: center;
+}
+
+.donation-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.donation-text {
+  max-width: 700px;
+  margin: 0 auto 40px;
+  color: var(--gray-light);
+  font-size: 18px;
+}
+
+.donation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.donation-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 30px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+  border: 2px solid transparent;
+  background-color: white;
+  color: var(--primary-color);
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  &.paypal-btn:hover {
+    background-color: #0070ba;
+    color: white;
+    border-color: #0070ba;
+  }
+  
+  &.coffee-btn:hover {
+    background-color: #ffdd00;
+    color: #5c3c0c;
+    border-color: #ffdd00;
+  }
+}
+
+.supporter-count {
+  font-size: 16px;
+  color: var(--gray-light);
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .donation-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .donation-btn {
+    width: 100%;
+    max-width: 250px;
+    justify-content: center;
+  }
+}
