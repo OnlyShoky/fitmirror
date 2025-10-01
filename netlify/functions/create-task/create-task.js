@@ -3,15 +3,17 @@ const axios = require('axios');
 exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-freepik-api-key, X-Requested-With',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Credentials': 'true',
+    'Content-Type': 'application/json'
   };
 
-  try {
-    if (event.httpMethod === 'OPTIONS') {
-      return { statusCode: 200, headers, body: '' };
-    }
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
 
+  try {
     if (event.httpMethod !== 'POST') {
       return {
         statusCode: 405,
@@ -20,7 +22,8 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { profileImage, clothingImage, prompt } = JSON.parse(event.body);
+    const body = JSON.parse(event.body || '{}');
+    const { profileImage, clothingImage, apiKey, prompt } = body;
     
     // Validar que tenemos las imágenes
     if (!profileImage || !clothingImage) {
@@ -34,9 +37,11 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const apiKey = process.env.FREEPIK_API_KEY;
+    // Determinar API key a usar
+    let finalApiKey = apiKey && apiKey.trim() ? apiKey.trim() : process.env.FREEPIK_API_KEY;
+    const authMode = apiKey ? 'USER_PROVIDED' : 'SERVER_PROVIDED';
     
-    if (!apiKey) {
+    if (!finalApiKey) {
       return {
         statusCode: 500,
         headers,
@@ -58,7 +63,7 @@ exports.handler = async (event, context) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          'x-freepik-api-key': apiKey
+          'x-freepik-api-key': finalApiKey
         }
       }
     );
@@ -69,7 +74,8 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         success: true,
         taskId: response.data.data.task_id,
-        message: 'Tarea creada exitosamente'
+        message: 'Tarea creada exitosamente',
+        authMode: authMode
       })
     };
 

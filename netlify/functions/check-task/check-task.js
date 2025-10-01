@@ -3,8 +3,10 @@ const axios = require('axios');
 exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-freepik-api-key, X-Requested-With',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Credentials': 'true',
+    'Content-Type': 'application/json'
   };
 
   try {
@@ -20,7 +22,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const { taskId } = event.queryStringParameters;
+    const { taskId, apiKey } = event.queryStringParameters;
     
     if (!taskId) {
       return {
@@ -33,9 +35,11 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const apiKey = process.env.FREEPIK_API_KEY;
+    // Determinar API key a usar
+    let finalApiKey = apiKey && apiKey.trim() ? apiKey.trim() : process.env.FREEPIK_API_KEY;
+    const authMode = apiKey ? 'USER_PROVIDED' : 'SERVER_PROVIDED';
     
-    if (!apiKey) {
+    if (!finalApiKey) {
       return {
         statusCode: 500,
         headers,
@@ -50,7 +54,7 @@ exports.handler = async (event, context) => {
       `https://api.freepik.com/v1/ai/gemini-2-5-flash-image-preview/${taskId}`,
       {
         headers: {
-          'x-freepik-api-key': apiKey
+          'x-freepik-api-key': finalApiKey
         }
       }
     );
@@ -61,7 +65,8 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         success: true,
         data: response.data.data,
-        message: 'Estado obtenido exitosamente'
+        message: 'Estado obtenido exitosamente',
+        authMode: authMode
       })
     };
 
