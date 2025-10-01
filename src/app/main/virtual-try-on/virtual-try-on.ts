@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FreepikService, GenerateResponse } from '../../services/freepik-service';
 import { TranslationService } from '../../services/translation';
+import { TryOnRequest, TryonService } from '../../services/tryon';
 
 @Component({
   selector: 'app-virtual-try-on',
@@ -34,9 +35,13 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
   // Status
   currentStatus: string = '';
 
-  constructor(private freepikService: FreepikService) {}
+  constructor(private freepikService: FreepikService) { }
 
-    private translationService = inject(TranslationService);
+  
+  private tryonService = inject(TryonService);
+  private translationService = inject(TranslationService);
+
+
 
   // Reactive translations using computed signals
   translations = this.translationService.currentTranslations;
@@ -66,7 +71,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     if (target.files && target.files.length) {
       const file = target.files[0];
       this.userPhotoFile = file;
-      
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.userPhotoPreview = e.target.result;
@@ -99,7 +104,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     if (target.files && target.files.length) {
       const file = target.files[0];
       this.clothingFile = file;
-      
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.clothingPreview = e.target.result;
@@ -138,7 +143,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     this.tryOnBtnDisabled = !(userPhotoExists && clothingExists);
   }
 
-  tryOn() {
+  async tryOn() {
     if (this.tryOnBtnDisabled || !this.userPhotoFile || !this.clothingFile) {
       return;
     }
@@ -146,12 +151,25 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     this.loading = true;
     this.resultSectionVisible = false;
     this.resultImage = null;
-    this.currentStatus = 'Creating generation task...';
+    this.currentStatus = 'Processing images...';
 
-    this.freepikService.generateTryOnImage(this.userPhotoFile, this.clothingFile)
-      .subscribe({
-        next: (response: GenerateResponse) => {
-          if (response.url) {
+    try {
+      // Convertir imágenes a base64
+      const [profileBase64, clothingBase64] = await Promise.all([
+        this.fileToBase64(this.userPhotoFile),
+        this.fileToBase64(this.clothingFile)
+      ]);
+
+      this.currentStatus = 'Creating generation task...';
+
+      const request: TryOnRequest = {
+        profileImage: profileBase64,
+        clothingImage: clothingBase64
+      };
+
+      this.tryonService.processTryOn(request).subscribe({
+        next: (response) => {
+          if (response.success && response.url) {
             this.resultImage = response.url;
             this.resultSectionVisible = true;
             this.currentStatus = 'Generation completed!';
@@ -160,19 +178,40 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
               const resultSection = document.querySelector('.result-section');
               resultSection?.scrollIntoView({ behavior: 'smooth' });
             }, 100);
-          } else if (response.message) {
-            this.currentStatus = response.message;
+          } else {
+            this.currentStatus = `Error: ${response.error}`;
+            alert(`Generation failed: ${response.error}`);
           }
         },
-        error: (error: GenerateResponse) => {
-          console.error('Generation error:', error);
-          this.currentStatus = `Error: ${error.error}`;
-          alert(`Generation failed: ${error.error}`);
+        error: (error) => {
+          console.error('API Error:', error);
+          this.currentStatus = `Error: ${error.message}`;
+          alert('Generation failed. Please try again.');
         },
         complete: () => {
           this.loading = false;
         }
       });
+
+    } catch (error) {
+      console.error('Error processing images:', error);
+      this.loading = false;
+      this.currentStatus = 'Error processing images';
+    }
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        // Remover el prefijo data:image/...;base64,
+        const base64Data = base64.split(',')[1];
+        resolve(base64Data);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 
   downloadResult() {
