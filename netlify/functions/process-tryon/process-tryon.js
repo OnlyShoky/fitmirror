@@ -52,7 +52,7 @@ exports.handler = async (event, context) => {
       reference_images: [profileImage, clothingImage]
     };
 
-    console.log('Creando tarea de generación...');
+    // console.log('Creando tarea de generación...');
     
     const createResponse = await axios.post(
       'https://api.freepik.com/v1/ai/gemini-2-5-flash-image-preview',
@@ -66,7 +66,7 @@ exports.handler = async (event, context) => {
     );
 
     const taskId = createResponse.data.data.task_id;
-    console.log('Tarea creada:', taskId);
+    // console.log('Tarea creada:', taskId);
 
     // 2. Polling para verificar estado
     let attempts = 0;
@@ -74,7 +74,7 @@ exports.handler = async (event, context) => {
     
     while (attempts < maxAttempts) {
       attempts++;
-      console.log(`Verificando estado (intento ${attempts})...`);
+    //   console.log(`Verificando estado (intento ${attempts})...`);
       
       await new Promise(resolve => setTimeout(resolve, 5000)); // Esperar 5 segundos
       
@@ -90,7 +90,7 @@ exports.handler = async (event, context) => {
 
         const task = statusResponse.data.data;
         const status = task.status;
-        console.log('Estado actual:', status);
+        // console.log('Estado actual:', status);
 
         if (status === 'COMPLETED') {
           const generated = task.generated;
@@ -127,7 +127,7 @@ exports.handler = async (event, context) => {
         }
         // Si está PROCESSING, continuamos el loop
       } catch (error) {
-        console.error('Error verificando estado:', error.message);
+        // console.error('Error verificando estado:', error.message);
         // Continuamos intentando
       }
     }
@@ -143,7 +143,7 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('Error en process-tryon:', error.response?.data || error.message);
+    // console.error('Error en process-tryon:', error.response?.data || error.message);
     
     return {
       statusCode: 500,
