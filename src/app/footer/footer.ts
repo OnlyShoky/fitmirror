@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { TranslationService } from '../services/translation';
 
 @Component({
   selector: 'app-footer',
@@ -8,4 +9,8 @@ import { Component } from '@angular/core';
 })
 export class Footer {
 
+  private translationService = inject(TranslationService);
+
+  // Reactive translations using computed signals
+  translations = this.translationService.currentTranslations;
 }

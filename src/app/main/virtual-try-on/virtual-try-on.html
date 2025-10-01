@@ -1,59 +1,59 @@
 <section class="main-section" id="how-it-works">
     <div class="container">
-        <h2 class="section-title">Your Virtual Fitting Room</h2>
+        <h2 class="section-title">{{ translations().howTitle }}</h2>
 
         <div class="panels-container">
             <!-- Left Panel - User Photo -->
             <div class="panel">
-                <h2 class="panel-title">Your Photo</h2>
+                <h2 class="panel-title">{{ translations().yourPhoto }}</h2>
 
                 <!-- Upload Area -->
                 <div class="upload-area" id="userPhotoUpload" (click)="triggerUserPhotoInput()"
                     *ngIf="userPhotoUploadVisible">
                     <i class="fas fa-user upload-icon"></i>
-                    <p class="upload-text">Upload your full-body photo</p>
-                    <p class="upload-subtext">Click or drag and drop</p>
+                    <p class="upload-text">{{ translations().uploadPhoto }}</p>
+                    <p class="upload-subtext">{{ translations().uploadClick }}</p>
                     <input type="file" id="userPhotoInput" accept="image/*" style="display: none;"
                         (change)="handleUserPhotoUpload($event)">
                 </div>
 
                 <!-- Preview -->
-                <img [src]="userPhotoPreview" class="image-preview" *ngIf="userPhotoPreview" alt="Your photo preview">
+                <img [src]="userPhotoPreview" class="image-preview" *ngIf="userPhotoPreview" [alt]="translations().yourPhoto">
 
                 <!-- Replace Button -->
                 <button class="replace-btn" *ngIf="replaceUserPhotoVisible" (click)="replaceUserPhoto()">
-                    Replace Photo
+                    {{ translations().replacePhoto }}
                 </button>
             </div>
 
             <!-- Right Panel - Clothing -->
             <div class="panel">
-                <h2 class="panel-title">Clothing</h2>
+                <h2 class="panel-title">{{ translations().clothing }}</h2>
 
                 <!-- Upload Area -->
                 <div class="upload-area" id="clothingUpload" (click)="triggerClothingInput()"
                     *ngIf="clothingUploadVisible">
                     <i class="fas fa-tshirt upload-icon"></i>
-                    <p class="upload-text">Upload clothing image</p>
-                    <p class="upload-subtext">Click or drag and drop</p>
+                    <p class="upload-text">{{ translations().uploadClothing }}</p>
+                    <p class="upload-subtext">{{ translations().uploadClick }}</p>
                     <input type="file" id="clothingInput" accept="image/*" style="display: none;"
                         (change)="handleClothingUpload($event)">
                 </div>
 
                 <!-- Preview -->
-                <img [src]="clothingPreview" class="image-preview" *ngIf="clothingPreview" alt="Clothing preview">
+                <img [src]="clothingPreview" class="image-preview" *ngIf="clothingPreview" [alt]="translations().clothing">
 
                 <!-- Replace Button -->
                 <button class="replace-btn" *ngIf="replaceClothingVisible" (click)="replaceClothing()">
-                    Replace Image
+                    {{ translations().replaceImage }}
                 </button>
 
                 <!-- Link Input -->
                 <div class="link-input-container">
-                    <p class="upload-text">Or paste a link</p>
+                    <p class="upload-text">{{ translations().pasteLink }}</p>
                     <input type="text" class="link-input" [(ngModel)]="clothingLink"
-                        placeholder="https://example.com/image.jpg">
-                    <button class="link-btn" (click)="loadFromLink()">Load Image</button>
+                        [placeholder]="'https://example.com/image.jpg'">
+                    <button class="link-btn" (click)="loadFromLink()">{{ translations().loadImage }}</button>
                 </div>
             </div>
         </div>
@@ -61,28 +61,28 @@
         <!-- Try On Button -->
         <div class="try-on-container">
             <button class="try-on-btn" [disabled]="tryOnBtnDisabled" (click)="tryOn()">
-                Try On
+                {{ translations().tryOn }}
             </button>
         </div>
 
-        <!-- Loading section actualizada -->
+        <!-- Loading section -->
         <div class="loading-container" *ngIf="loading">
             <div class="spinner"></div>
-            <p class="loading-text">Processing your virtual try-on...</p>
+            <p class="loading-text">{{ translations().processing }}</p>
             <p class="loading-subtext">{{ currentStatus }}</p>
             <p class="loading-note">
-                This may take 1-2 minutes. Please don't close the page.
+                {{ translations().processing }}
             </p>
         </div>
 
-        <!-- Result section con botón de descarga -->
+        <!-- Result section -->
         <div class="result-section" *ngIf="resultSectionVisible">
-            <h2 class="result-title">Your Virtual Try-On Result</h2>
-            <img [src]="resultImage" class="result-image" alt="Virtual try-on result">
+            <h2 class="result-title">{{ translations().resultTitle }}</h2>
+            <img [src]="resultImage" class="result-image" [alt]="translations().resultTitle">
 
             <div class="result-actions">
-                <button class="try-on-btn" (click)="tryOn()">Generate Another</button>
-                <button class="download-btn" (click)="downloadResult()">Download Image</button>
+                <button class="try-on-btn" (click)="tryOn()">{{ translations().tryOn }}</button>
+                <button class="download-btn" (click)="downloadResult()">{{ translations().tryOn }}</button>
             </div>
         </div>
     </div>

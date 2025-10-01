@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { TranslationService } from '../../services/translation';
 
 @Component({
   selector: 'app-mobile-menu',
@@ -16,4 +17,9 @@ export class MobileMenuComponent {
   openMobileMenu() {
     this.isActive = true;
   }
+
+    private translationService = inject(TranslationService);
+
+  // Reactive translations using computed signals
+  translations = this.translationService.currentTranslations;
 }

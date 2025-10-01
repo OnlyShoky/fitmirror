@@ -1,0 +1,40 @@
+:host {
+  display: block;
+}
+
+.language-switcher {
+  display: flex;
+  gap: 5px;
+  margin-left: 20px;
+}
+
+.language-btn {
+  padding: 5px 10px;
+  border: 1px solid var(--gray-light);
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  
+  &:hover {
+    background: var(--gray-light);
+  }
+  
+  &.active {
+    background: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+  }
+  
+  &:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+  }
+  
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}

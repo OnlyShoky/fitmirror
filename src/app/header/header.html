@@ -1,22 +1,22 @@
 <div class="container">
     <div class="header-content">
         <a href="#" class="logo">
-            <i class="fas fa-mirror logo-icon"></i>
-            <span>FitMirror</span>
+            <img src="assets/logo.png" alt="FitMirror Logo" class="logo-icon" />
+            <span class="logo-text">
+                Fit<span class="logo-gold">Mirror</span>
+            </span>
         </a>
 
         <nav class="nav-links">
-            <a href="#" class="nav-link">Home</a>
-            <a href="#how-it-works" class="nav-link">How It Works</a>
-            <a href="#features" class="nav-link">Features</a>
-            <a href="#support" class="nav-link">Support</a>
+            <a href="#" class="nav-link">{{ translations().navHome }}</a>
+            <a href="#how-it-works" class="nav-link">{{ translations().navHow }}</a>
+            <a href="#features" class="nav-link">{{ translations().navFeatures }}</a>
+            <a href="#support" class="nav-link">{{ translations().navSupport }}</a>
         </nav>
-        <div class="language-switcher">
-                    <button class="language-btn active" data-lang="en">EN</button>
-                    <button class="language-btn" data-lang="es">ES</button>
-                    <button class="language-btn" data-lang="fr">FR</button>
-                </div>
-        <button class="mobile-menu-btn">
+
+        <app-language-selector></app-language-selector>
+        
+        <button class="mobile-menu-btn" (click)="openMobileMenu()">
             <i class="fas fa-bars"></i>
         </button>
     </div>

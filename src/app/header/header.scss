@@ -94,33 +94,34 @@ header {
   .nav-links {
     display: none;
   }
-  
+
   .mobile-menu-btn {
     display: block;
   }
 }
 
-        .language-switcher {
-            display: flex;
-            gap: 5px;
-            margin-left: 20px;
-        }
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
 
-        .language-btn {
-            padding: 5px 10px;
-            border: 1px solid var(--gray-light);
-            background: white;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
+  .logo-icon {
+    height: 60px; // adjust as needed
+    margin-right: 8px;
+  }
 
-        .language-btn:hover {
-            background: var(--gray-light);
-        }
+  span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1a365d; // your brand navy
+  }
+}
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1a365d; // navy for "Bary"
 
-        .language-btn.active {
-            background: var(--secondary-color);
-            color: white;
-            border-color: var(--secondary-color);
-        }
+  .logo-gold {
+    color: #c89b3c; // gold for "Myrror"
+  }
+}

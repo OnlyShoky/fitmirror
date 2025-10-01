@@ -1,8 +1,9 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FreepikService, GenerateResponse } from '../../services/freepik-service';
+import { TranslationService } from '../../services/translation';
 
 @Component({
   selector: 'app-virtual-try-on',
@@ -34,6 +35,11 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
   currentStatus: string = '';
 
   constructor(private freepikService: FreepikService) {}
+
+    private translationService = inject(TranslationService);
+
+  // Reactive translations using computed signals
+  translations = this.translationService.currentTranslations;
 
   ngOnInit() {
     const savedUserPhoto = localStorage.getItem('fitMirrorUserPhoto');

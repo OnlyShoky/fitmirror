@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { TranslationService } from '../../services/translation';
 
 @Component({
   selector: 'app-features',
@@ -7,5 +8,8 @@ import { Component } from '@angular/core';
   styleUrl: './features.scss'
 })
 export class Features {
+  private translationService = inject(TranslationService);
 
+  // Reactive translations using computed signals
+  translations = this.translationService.currentTranslations;
 }
