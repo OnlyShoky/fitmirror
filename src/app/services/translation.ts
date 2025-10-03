@@ -120,7 +120,7 @@ export class TranslationService {
 
 
       // Features
-      whyTitle: 'Why Choose FitMirror',
+      whyTitle: 'Why Choose MyraMyrror',
       accurateFit: 'Accurate Fit Visualization',
       accurateDesc: 'See exactly how clothes will fit your body type before making a purchase.',
       saveProfile: 'Save Your Profile',
@@ -138,7 +138,7 @@ export class TranslationService {
       validUrl: 'Please enter a valid image URL',
 
       // Support
-      supportTitle: 'Support FitMirror',
+      supportTitle: 'Support MyraMyrror',
       supportText: 'Help keep this site and API free! Your support covers server costs and ensures we can continue providing great content. Currently 0 supporters.',
       paypal: 'Support via PayPal',
       coffee: 'Buy Me a Coffee',
@@ -193,7 +193,7 @@ export class TranslationService {
       enterApiKey: 'Ingresa API Key Primero',
 
       // Features
-      whyTitle: 'Por Qué Elegir FitMirror',
+      whyTitle: 'Por Qué Elegir MyraMyrror',
       accurateFit: 'Visualización Preciso',
       accurateDesc: 'Vea exactamente cómo le quedará la ropa a su tipo de cuerpo antes de comprar.',
       saveProfile: 'Guarda tu Perfil',
@@ -211,7 +211,7 @@ export class TranslationService {
       validUrl: 'Por favor ingrese una URL de imagen válida',
 
       // Support
-      supportTitle: 'Apoya a FitMirror',
+      supportTitle: 'Apoya a MyraMyrror',
       supportText: '¡Ayuda a mantener este sitio y API gratis! Tu apoyo cubre los costos del servidor y nos permite continuar brindando contenido de calidad. Actualmente 0 seguidores.',
       paypal: 'Apoya via PayPal',
       coffee: 'Cómprame un Café',
@@ -266,7 +266,7 @@ export class TranslationService {
 
 
       // Features
-      whyTitle: 'Pourquoi Choisir FitMirror',
+      whyTitle: 'Pourquoi Choisir MyraMyrror',
       accurateFit: 'Visualisation Précise',
       accurateDesc: 'Voyez exactement comment les vêtements s\'adapteront à votre type de corps avant d\'acheter.',
       saveProfile: 'Enregistrez votre Profil',
@@ -284,7 +284,7 @@ export class TranslationService {
       validUrl: 'Veuillez entrer une URL d\'image valide',
 
       // Support
-      supportTitle: 'Soutenez FitMirror',
+      supportTitle: 'Soutenez MyraMyrror',
       supportText: 'Aidez à garder ce site et cette API gratuits! Votre soutien couvre les coûts du serveur et nous permet de continuer à fournir un excellent contenu. Actuellement 0 supporters.',
       paypal: 'Soutenir via PayPal',
       coffee: 'Offrez-moi un Café',
@@ -373,21 +373,21 @@ export class TranslationService {
    */
   private updateSEOTags(lang: string): void {
     const titles = {
-      en: 'FitMirror | Virtual Try-On Solution',
-      es: 'FitMirror | Solución de Prueba Virtual',
-      fr: 'FitMirror | Solution d\'Essai Virtuel'
+      en: 'MyraMyrror | Virtual Try-On Solution',
+      es: 'MyraMyrror | Solución de Prueba Virtual',
+      fr: 'MyraMyrror | Solution d\'Essai Virtuel'
     };
 
     const descriptions = {
-      en: 'Try before you buy with FitMirror\'s advanced virtual try-on technology. See how clothes fit your body type instantly.',
-      es: 'Prueba antes de comprar con la tecnología avanzada de prueba virtual de FitMirror. Vea cómo le queda la ropa a su tipo de cuerpo al instante.',
-      fr: 'Essayez avant d\'acheter avec la technologie d\'essai virtuel avancée de FitMirror. Voyez comment les vêtements s\'adaptent à votre type de corps instantanément.'
+      en: 'Try before you buy with MyraMyrror\'s advanced virtual try-on technology. See how clothes fit your body type instantly.',
+      es: 'Prueba antes de comprar con la tecnología avanzada de prueba virtual de MyraMyrror. Vea cómo le queda la ropa a su tipo de cuerpo al instante.',
+      fr: 'Essayez avant d\'acheter avec la technologie d\'essai virtuel avancée de MyraMyrror. Voyez comment les vêtements s\'adaptent à votre type de corps instantanément.'
     };
 
     const keywords = {
-      en: 'FitMirror, virtual try-on, fashion, clothing, fit visualization, AI try-on',
-      es: 'FitMirror, prueba virtual, moda, ropa, visualización de ajuste, IA prueba',
-      fr: 'FitMirror, essai virtuel, mode, vêtements, visualisation d\'ajustement, IA essai'
+      en: 'MyraMyrror, virtual try-on, fashion, clothing, fit visualization, AI try-on',
+      es: 'MyraMyrror, prueba virtual, moda, ropa, visualización de ajuste, IA prueba',
+      fr: 'MyraMyrror, essai virtuel, mode, vêtements, visualisation d\'ajustement, IA essai'
     };
 
     this.title.setTitle(titles[lang as keyof typeof titles] || titles.en);

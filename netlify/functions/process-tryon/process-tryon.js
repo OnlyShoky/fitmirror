@@ -103,7 +103,7 @@ exports.handler = async (event, context) => {
     console.log(`Creating task in Freepik API (auth mode: ${authMode})...`);
     
     const createTaskData = {
-      prompt: "Take the original photo of the person and add the clothing from the reference image. Keep the same size, proportions, and pose of the person, only adding the clothing naturally.",
+      prompt: "Take the original photo of the person and replace their current clothing with the clothing from the reference image. Keep the person exactly the same in pose, proportions, facial features, and body shape. Fit the new clothing naturally to the person’s body, making sure it looks realistic and well-adjusted. Remove any old clothing if it conflicts with the new one. Do not add extra elements, backgrounds, or borders. The final output image must match the original photo’s size, framing, and dimensions exactly, with no blanks or distortions.",
       reference_images: [profileImage, clothingImage]
     };
 
@@ -120,7 +120,7 @@ exports.handler = async (event, context) => {
     );
 
     const taskId = createResponse.data.data.task_id;
-    console.log('Task created:', taskId, '(auth mode:', authMode + ')');
+    // console.log('Task created:', taskId, '(auth mode:', authMode + ')');
 
     // Polling para verificar estado
     let attempts = 0;
