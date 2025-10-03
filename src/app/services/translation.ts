@@ -84,13 +84,13 @@ export class TranslationService {
     en: {
       // Navigation
       navHome: 'Home',
-      navHow: 'How It Works',
+      navHow: 'Virtual Try-On',
       navFeatures: 'Features',
       navSupport: 'Support',
       getStarted: 'Get Started',
 
       // Main Section
-      howTitle: 'How It Works',
+      howTitle: 'Virtual Try-On',
       yourPhoto: 'Your Photo',
       uploadPhoto: 'Upload your full-body photo',
       clothing: 'Clothing',
@@ -158,13 +158,13 @@ export class TranslationService {
     es: {
       // Navigation
       navHome: 'Inicio',
-      navHow: 'Cómo Funciona',
+      navHow: 'Prueba Virtual',
       navFeatures: 'Características',
       navSupport: 'Soporte',
       getStarted: 'Comenzar',
 
       // Main Section
-      howTitle: 'Cómo Funciona',
+      howTitle: 'Prueba Virtual',
       yourPhoto: 'Tu Foto',
       uploadPhoto: 'Sube tu foto de cuerpo completo',
       clothing: 'Ropa',
@@ -231,13 +231,13 @@ export class TranslationService {
     fr: {
       // Navigation
       navHome: 'Accueil',
-      navHow: 'Comment ça Marche',
+      navHow: 'Essai Virtuel',
       navFeatures: 'Fonctionnalités',
       navSupport: 'Support',
       getStarted: 'Commencer',
 
       // Main Section
-      howTitle: 'Comment ça Marche',
+      howTitle: 'Essai Virtuel',
       yourPhoto: 'Votre Photo',
       uploadPhoto: 'Téléchargez votre photo en pied',
       clothing: 'Vêtements',
