@@ -100,3 +100,29 @@ footer {
     gap: 30px;
   }
 }
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+
+  .logo-icon {
+    height: 60px; // adjust as needed
+    margin-right: 8px;
+  }
+
+  span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff; // your brand navy
+  }
+}
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff; // navy for "Bary"
+
+  .logo-gold {
+    color: #c89b3c; // gold for "Myrror"
+  }
+}
