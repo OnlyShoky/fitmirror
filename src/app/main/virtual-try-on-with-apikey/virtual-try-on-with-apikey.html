@@ -2,39 +2,7 @@
     <div class="container">
         <h2 class="section-title">{{ translations().howTitle }}</h2>
 
-        <!-- API Key Input Section -->
-        <div class="api-key-section">
-            <div class="api-key-container">
-                <label for="apiKeyInput" class="api-key-label">
-                    <i class="fas fa-key"></i>
-                    {{ translations().apiKeyLabel || 'Your Freepik API Key' }}
-                </label>
-                <div class="api-key-input-group">
-                    <input 
-                        type="password" 
-                        id="apiKeyInput"
-                        class="api-key-input" 
-                        [(ngModel)]="userApiKey"
-                        [placeholder]="translations().apiKeyPlaceholder || 'Enter your Freepik API key'"
-                        (input)="onApiKeyChange()"
-                    />
-                    <button 
-                        class="api-key-info-btn"
-                        (click)="showApiKeyInfo()"
-                        type="button"
-                        [attr.aria-label]="translations().apiKeyInfo || 'API Key information'"
-                    >
-                        <i class="fas fa-info-circle"></i>
-                    </button>
-                </div>
-                <p class="api-key-help" *ngIf="!userApiKey">
-                    {{ translations().apiKeyHelp || 'You need a Freepik API key to use the virtual try-on feature.' }}
-                    <a href="https://freepik.com/api" target="_blank" class="api-key-link">
-                        {{ translations().getApiKey || 'Get your API key' }}
-                    </a>
-                </p>
-            </div>
-        </div>
+
 
         <div class="panels-container">
             <!-- Left Panel - User Photo -->
@@ -89,6 +57,40 @@
                         [placeholder]="'https://example.com/image.jpg'">
                     <button class="link-btn" (click)="loadFromLink()">{{ translations().loadImage }}</button>
                 </div>
+            </div>
+        </div>
+
+                <!-- API Key Input Section -->
+        <div class="api-key-section">
+            <div class="api-key-container">
+                <label for="apiKeyInput" class="api-key-label">
+                    <i class="fas fa-key"></i>
+                    {{ translations().apiKeyLabel || 'Your Freepik API Key' }}
+                </label>
+                <div class="api-key-input-group">
+                    <input 
+                        type="password" 
+                        id="apiKeyInput"
+                        class="api-key-input" 
+                        [(ngModel)]="userApiKey"
+                        [placeholder]="translations().apiKeyPlaceholder || 'Enter your Freepik API key'"
+                        (input)="onApiKeyChange()"
+                    />
+                    <button 
+                        class="api-key-info-btn"
+                        (click)="showApiKeyInfo()"
+                        type="button"
+                        [attr.aria-label]="translations().apiKeyInfo || 'API Key information'"
+                    >
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                </div>
+                <p class="api-key-help" *ngIf="!userApiKey">
+                    {{ translations().apiKeyHelp || 'You need a Freepik API key to use the virtual try-on feature.' }}
+                    <a href="https://freepik.com/api" target="_blank" class="api-key-link">
+                        {{ translations().getApiKey || 'Get your API key' }}
+                    </a>
+                </p>
             </div>
         </div>
 
