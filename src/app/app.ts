@@ -12,5 +12,5 @@ import { Main } from './main/main';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('fitmirror');
+  protected readonly title = signal('myramyrror');
 }

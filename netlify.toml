@@ -1,12 +1,12 @@
 [build]
-  publish = "dist/fitmirror/browser"
+  publish = "dist/myramyrror/browser"
   functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
 
 [dev]
-  publish = "dist/fitmirror/browser"
+  publish = "dist/myramyrror/browser"
   functions = "netlify/functions"
   port = 8888
   target = "angular"

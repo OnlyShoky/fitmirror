@@ -29,7 +29,7 @@ export class HowItWorksComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // Check if user photo exists in localStorage
-    const savedUserPhoto = localStorage.getItem('fitMirrorUserPhoto');
+    const savedUserPhoto = localStorage.getItem('myramyrrorUserPhoto');
     if (savedUserPhoto) {
       this.userPhotoPreview = savedUserPhoto;
       this.userPhotoUploadVisible = false;
@@ -59,7 +59,7 @@ export class HowItWorksComponent implements OnInit, AfterViewInit {
         this.replaceUserPhotoVisible = true;
         
         // Save to localStorage
-        localStorage.setItem('fitMirrorUserPhoto', e.target.result);
+        localStorage.setItem('myramyrrorUserPhoto', e.target.result);
         this.checkTryOnButton();
       };
       reader.readAsDataURL(file);
@@ -70,7 +70,7 @@ export class HowItWorksComponent implements OnInit, AfterViewInit {
     this.userPhotoPreview = null;
     this.userPhotoUploadVisible = true;
     this.replaceUserPhotoVisible = false;
-    localStorage.removeItem('fitMirrorUserPhoto');
+    localStorage.removeItem('myramyrrorUserPhoto');
     this.checkTryOnButton();
   }
 
@@ -151,7 +151,7 @@ export class HowItWorksComponent implements OnInit, AfterViewInit {
         this.userPhotoPreview = result;
         this.userPhotoUploadVisible = false;
         this.replaceUserPhotoVisible = true;
-        localStorage.setItem('fitMirrorUserPhoto', result);
+        localStorage.setItem('myramyrrorUserPhoto', result);
         this.checkTryOnButton();
       }
     );

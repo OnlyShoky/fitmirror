@@ -68,7 +68,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
   }
 
   private loadPersistedUserPhoto() {
-    const savedUserPhoto = localStorage.getItem('fitMirrorUserPhoto');
+    const savedUserPhoto = localStorage.getItem('myramyrrorUserPhoto');
     if (savedUserPhoto) {
       this.userPhotoPreview = savedUserPhoto;
       this.userPhotoUploadVisible = false;
@@ -126,7 +126,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         this.userPhotoUploadVisible = false;
         this.replaceUserPhotoVisible = true;
         this.hasPersistedPhoto = false;
-        localStorage.setItem('fitMirrorUserPhoto', e.target.result);
+        localStorage.setItem('myramyrrorUserPhoto', e.target.result);
         this.checkTryOnButton();
       };
       reader.readAsDataURL(file);
@@ -139,7 +139,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     this.replaceUserPhotoVisible = false;
     this.userPhotoFile = null;
     this.hasPersistedPhoto = false;
-    localStorage.removeItem('fitMirrorUserPhoto');
+    localStorage.removeItem('myramyrrorUserPhoto');
     this.checkTryOnButton();
     
     const input = document.getElementById('userPhotoInput') as HTMLInputElement;
@@ -430,7 +430,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         this.userPhotoUploadVisible = false;
         this.replaceUserPhotoVisible = true;
         this.hasPersistedPhoto = false;
-        localStorage.setItem('fitMirrorUserPhoto', result);
+        localStorage.setItem('myramyrrorUserPhoto', result);
         this.checkTryOnButton();
       }
     );

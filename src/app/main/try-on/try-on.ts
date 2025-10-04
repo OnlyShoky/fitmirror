@@ -26,7 +26,7 @@ export class TryOnComponent {
     this.resultImage = null;
 
     // Get user photo from localStorage for demo
-    const userPhoto = localStorage.getItem('fitMirrorUserPhoto');
+    const userPhoto = localStorage.getItem('myramyrrorUserPhoto');
 
     // Simulate API call
     setTimeout(() => {

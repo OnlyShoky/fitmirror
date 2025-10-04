@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "fitmirror": {
+    "myramyrror": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -63,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "fitmirror:build:production"
+              "buildTarget": "myramyrror:build:production"
             },
             "development": {
-              "buildTarget": "fitmirror:build:development"
+              "buildTarget": "myramyrror:build:development"
             }
           },
           "defaultConfiguration": "development"
