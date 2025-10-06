@@ -355,10 +355,10 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         throw new Error('No clothing image available');
       }
 
-      console.log('Formatos detectados:', {
-        profile: profileFormat,
-        clothing: clothingFormat
-      });
+      // console.log('Formatos detectados:', {
+      //   profile: profileFormat,
+      //   clothing: clothingFormat
+      // });
 
       this.currentStatus = 'Creando tarea de generación...';
 
@@ -666,8 +666,8 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
                 type: 'image/jpeg',
                 lastModified: new Date().getTime()
               });
-              console.log('Original size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
-              console.log('Compressed size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
+              // console.log('Original size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+              // console.log('Compressed size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
               resolve(compressedFile);
             } else {
               reject(new Error('Compression failed'));
