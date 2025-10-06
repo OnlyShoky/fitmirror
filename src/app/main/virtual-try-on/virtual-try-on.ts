@@ -291,10 +291,12 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     try {
       let profileBase64: string;
       let profileFormat: string;
-      
+
       // Procesar foto de usuario
       if (this.userPhotoFile) {
-        const result = await this.fileToBase64WithFormat(this.userPhotoFile);
+        // Compress if needed
+        const compressedUserPhoto = await this.compressImageFile(this.userPhotoFile, 2, 0.8);
+        const result = await this.fileToBase64WithFormat(compressedUserPhoto);
         profileBase64 = result.base64;
         profileFormat = result.format;
       } else if (this.hasPersistedPhoto && this.userPhotoPreview) {
@@ -310,12 +312,12 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
 
       // Procesar prenda de ropa - AHORA MANEJA AMBOS CASOS
       if (this.clothingFile) {
-        // Caso 1: Archivo subido
-        const result = await this.fileToBase64WithFormat(this.clothingFile);
+        // Compress if needed
+        const compressedClothing = await this.compressImageFile(this.clothingFile, 2, 0.8);
+        const result = await this.fileToBase64WithFormat(compressedClothing);
         clothingBase64 = result.base64;
         clothingFormat = result.format;
       } else if (this.clothingFromLink && this.clothingPreview) {
-        // Caso 2: Imagen desde link (ya está en base64)
         const result = this.extractBase64FromDataUrl(this.clothingPreview);
         clothingBase64 = result.base64;
         clothingFormat = result.format;
@@ -514,5 +516,37 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         alert('Please upload an image file (JPG, PNG, WEBP)');
       }
     }
+  }
+
+  // Reduces image file size if needed (returns a new File or the original if small enough)
+  private async compressImageFile(file: File, maxSizeMB = 2, quality = 0.8): Promise<File> {
+    if (file.size <= maxSizeMB * 1024 * 1024) {
+      return file;
+    }
+    return new Promise<File>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+              resolve(compressedFile);
+            } else {
+              reject(new Error('Compression failed'));
+            }
+          },
+          'image/jpeg',
+          quality
+        );
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
   }
 }
