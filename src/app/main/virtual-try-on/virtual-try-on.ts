@@ -68,13 +68,18 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
   }
 
   private loadPersistedUserPhoto() {
-    const savedUserPhoto = localStorage.getItem('myramyrrorUserPhoto');
-    if (savedUserPhoto) {
-      this.userPhotoPreview = savedUserPhoto;
-      this.userPhotoUploadVisible = false;
-      this.replaceUserPhotoVisible = true;
-      this.hasPersistedPhoto = true;
-      this.checkTryOnButton();
+    try {
+      const savedUserPhoto = localStorage.getItem('myramyrrorUserPhoto');
+      if (savedUserPhoto) {
+        this.userPhotoPreview = savedUserPhoto;
+        this.userPhotoUploadVisible = false;
+        this.replaceUserPhotoVisible = true;
+        this.hasPersistedPhoto = true;
+        this.checkTryOnButton();
+      }
+    } catch (error) {
+      console.warn('Error loading persisted photo:', error);
+      this.clearOldStorage();
     }
   }
 
@@ -90,8 +95,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
 
     // Validar tamaño
     if (file.size > this.MAX_FILE_SIZE) {
-      // console.log('File size:', file.size, 'bytes');
-      // console.log('Max file size:', this.MAX_FILE_SIZE, 'bytes');
       return {
         isValid: false,
         error: `Archivo demasiado grande: ${(file.size / 1024 / 1024).toFixed(2)}MB. Máximo ${(this.MAX_FILE_SIZE/ 1024 / 1024).toFixed(2)} MB.`
@@ -107,7 +110,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     input?.click();
   }
 
-  handleUserPhotoUpload(event: Event) {
+  async handleUserPhotoUpload(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length) {
       const file = target.files[0];
@@ -120,18 +123,29 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         return;
       }
 
-      this.userPhotoFile = file;
+      // Comprimir imagen antes de procesar
+      try {
+        const compressedFile = await this.compressImageFile(file, 1, 0.7); // Más compresión para almacenamiento
+        this.userPhotoFile = compressedFile;
 
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.userPhotoPreview = e.target.result;
-        this.userPhotoUploadVisible = false;
-        this.replaceUserPhotoVisible = true;
-        this.hasPersistedPhoto = false;
-        localStorage.setItem('myramyrrorUserPhoto', e.target.result);
-        this.checkTryOnButton();
-      };
-      reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.userPhotoPreview = e.target.result;
+          this.userPhotoUploadVisible = false;
+          this.replaceUserPhotoVisible = true;
+          this.hasPersistedPhoto = false;
+          
+          // Guardar versión comprimida en localStorage
+          this.saveCompressedUserPhoto(e.target.result as string);
+          
+          this.checkTryOnButton();
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        alert('Error processing image. Please try again with a smaller file.');
+        target.value = '';
+      }
     }
   }
 
@@ -141,7 +155,13 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     this.replaceUserPhotoVisible = false;
     this.userPhotoFile = null;
     this.hasPersistedPhoto = false;
-    localStorage.removeItem('myramyrrorUserPhoto');
+    
+    try {
+      localStorage.removeItem('myramyrrorUserPhoto');
+    } catch (error) {
+      console.warn('Error removing photo from storage:', error);
+    }
+    
     this.checkTryOnButton();
     
     const input = document.getElementById('userPhotoInput') as HTMLInputElement;
@@ -156,7 +176,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     input?.click();
   }
 
-  handleClothingUpload(event: Event) {
+  async handleClothingUpload(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length) {
       const file = target.files[0];
@@ -169,17 +189,25 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         return;
       }
 
-      this.clothingFile = file;
-      this.clothingFromLink = false; // No es de un link
+      // Comprimir imagen antes de procesar
+      try {
+        const compressedFile = await this.compressImageFile(file, 1, 0.7);
+        this.clothingFile = compressedFile;
+        this.clothingFromLink = false; // No es de un link
 
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.clothingPreview = e.target.result;
-        this.clothingUploadVisible = false;
-        this.replaceClothingVisible = true;
-        this.checkTryOnButton();
-      };
-      reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.clothingPreview = e.target.result;
+          this.clothingUploadVisible = false;
+          this.replaceClothingVisible = true;
+          this.checkTryOnButton();
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        alert('Error processing image. Please try again with a smaller file.');
+        target.value = '';
+      }
     }
   }
 
@@ -296,9 +324,8 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
 
       // Procesar foto de usuario
       if (this.userPhotoFile) {
-        // Compress if needed
+        // Compress if needed - usar compresión más agresiva para envío
         const compressedUserPhoto = await this.compressImageFile(this.userPhotoFile, 2, 0.8);
-        // console.log('User photo size after compression:', compressedUserPhoto.size, 'bytes');
         const result = await this.fileToBase64WithFormat(compressedUserPhoto);
         profileBase64 = result.base64;
         profileFormat = result.format;
@@ -315,9 +342,8 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
 
       // Procesar prenda de ropa - AHORA MANEJA AMBOS CASOS
       if (this.clothingFile) {
-        // Compress if needed
+        // Compress if needed - usar compresión más agresiva para envío
         const compressedClothing = await this.compressImageFile(this.clothingFile, 2, 0.8);
-        // console.log('Clothing image size after compression:', compressedClothing.size, 'bytes');
         const result = await this.fileToBase64WithFormat(compressedClothing);
         clothingBase64 = result.base64;
         clothingFormat = result.format;
@@ -419,44 +445,64 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     }
   }
 
-  // Drag and Drop (actualizado con validación)
+  // Drag and Drop (actualizado con compresión)
   setupDragAndDrop() {
     this.setupSingleDragAndDrop(
       'userPhotoUpload',
       'userPhotoInput',
-      (result: string, file: File) => {
+      async (result: string, file: File) => {
         const validation = this.validateFile(file);
         if (!validation.isValid) {
           alert(validation.error);
           return;
         }
         
-        this.userPhotoPreview = result;
-        this.userPhotoFile = file;
-        this.userPhotoUploadVisible = false;
-        this.replaceUserPhotoVisible = true;
-        this.hasPersistedPhoto = false;
-        localStorage.setItem('myramyrrorUserPhoto', result);
-        this.checkTryOnButton();
+        try {
+          // Comprimir imagen en drag & drop también
+          const compressedFile = await this.compressImageFile(file, 1, 0.7);
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            this.userPhotoPreview = e.target.result;
+            this.userPhotoFile = compressedFile;
+            this.userPhotoUploadVisible = false;
+            this.replaceUserPhotoVisible = true;
+            this.hasPersistedPhoto = false;
+            this.saveCompressedUserPhoto(e.target.result as string);
+            this.checkTryOnButton();
+          };
+          reader.readAsDataURL(compressedFile);
+        } catch (error) {
+          alert('Error processing image. Please try again with a smaller file.');
+        }
       }
     );
 
     this.setupSingleDragAndDrop(
       'clothingUpload',
       'clothingInput',
-      (result: string, file: File) => {
+      async (result: string, file: File) => {
         const validation = this.validateFile(file);
         if (!validation.isValid) {
           alert(validation.error);
           return;
         }
         
-        this.clothingPreview = result;
-        this.clothingFile = file;
-        this.clothingUploadVisible = false;
-        this.replaceClothingVisible = true;
-        this.clothingFromLink = false;
-        this.checkTryOnButton();
+        try {
+          // Comprimir imagen en drag & drop también
+          const compressedFile = await this.compressImageFile(file, 1, 0.7);
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            this.clothingPreview = e.target.result;
+            this.clothingFile = compressedFile;
+            this.clothingUploadVisible = false;
+            this.replaceClothingVisible = true;
+            this.clothingFromLink = false;
+            this.checkTryOnButton();
+          };
+          reader.readAsDataURL(compressedFile);
+        } catch (error) {
+          alert('Error processing image. Please try again with a smaller file.');
+        }
       }
     );
   }
@@ -509,39 +555,119 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     if (files.length > 0) {
       const file = files[0];
       if (file.type.match('image.*')) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (event.target?.result) {
-            onSuccess(event.target.result as string, file);
-          }
-        };
-        reader.readAsDataURL(file);
+        onSuccess('', file); // Pasamos el file directamente para compresión
       } else {
         alert('Please upload an image file (JPG, PNG, WEBP)');
       }
     }
   }
 
-  // Reduces image file size if needed (returns a new File or the original if small enough)
+  // NUEVO MÉTODO: Guardar foto de usuario comprimida
+  private saveCompressedUserPhoto(dataUrl: string) {
+    try {
+      // Crear una versión más pequeña para almacenamiento
+      this.createThumbnailForStorage(dataUrl).then((compressedDataUrl) => {
+        localStorage.setItem('myramyrrorUserPhoto', compressedDataUrl);
+      }).catch(() => {
+        // Si falla la compresión, no guardar nada
+        localStorage.removeItem('myramyrrorUserPhoto');
+      });
+    } catch (error) {
+      // Si hay error de cuota, limpiar storage viejo
+      this.clearOldStorage();
+    }
+  }
+
+  // NUEVO MÉTODO: Crear miniatura para almacenamiento
+  private createThumbnailForStorage(dataUrl: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        // Tamaño muy pequeño para almacenamiento (max 400px)
+        const maxSize = 400;
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxSize) {
+            height = Math.round((height * maxSize) / width);
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = Math.round((width * maxSize) / height);
+            height = maxSize;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Calidad muy baja para almacenamiento
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
+        resolve(compressedDataUrl);
+      };
+      img.onerror = reject;
+      img.src = dataUrl;
+    });
+  }
+
+  // NUEVO MÉTODO: Limpiar storage viejo
+  private clearOldStorage() {
+    try {
+      localStorage.removeItem('myramyrrorUserPhoto');
+      // Puedes añadir más items para limpiar si es necesario
+    } catch (error) {
+      console.error('Error clearing storage:', error);
+    }
+  }
+
+  // Método de compresión MEJORADO
   private async compressImageFile(file: File, maxSizeMB = 2, quality = 0.8): Promise<File> {
+    // Si el archivo ya es pequeño, no comprimir
     if (file.size <= maxSizeMB * 1024 * 1024) {
       return file;
     }
+    
     return new Promise<File>((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+        
+        // Calcular nuevas dimensiones manteniendo aspect ratio
+        let { width, height } = img;
+        const maxDimension = 1200; // Máximo ancho/alto
+        
+        if (width > height) {
+          if (width > maxDimension) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          }
+        } else {
+          if (height > maxDimension) {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
         const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0);
+        ctx?.drawImage(img, 0, 0, width, height);
 
         canvas.toBlob(
           (blob) => {
             if (blob) {
-              const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
-              // console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
-              // console.log('Compressed file size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
+              const compressedFile = new File([blob], file.name, { 
+                type: 'image/jpeg',
+                lastModified: new Date().getTime()
+              });
+              console.log('Original size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+              console.log('Compressed size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
               resolve(compressedFile);
             } else {
               reject(new Error('Compression failed'));
@@ -551,7 +677,11 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
           quality
         );
       };
-      img.onerror = reject;
+      img.onerror = () => {
+        // Si falla la compresión, devolver el archivo original
+        console.warn('Compression failed, using original file');
+        resolve(file);
+      };
       img.src = URL.createObjectURL(file);
     });
   }
