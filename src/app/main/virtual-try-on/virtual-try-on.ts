@@ -38,7 +38,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
 
   // Formatos aceptados
   private readonly ACCEPTED_FORMATS = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-  private readonly MAX_FILE_SIZE = 2 * 1024 * 1024; // 10MB
+  private readonly MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
   private tryonService = inject(TryonService);
   private translationService = inject(TranslationService);
@@ -90,9 +90,11 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
 
     // Validar tamaño
     if (file.size > this.MAX_FILE_SIZE) {
+      // console.log('File size:', file.size, 'bytes');
+      // console.log('Max file size:', this.MAX_FILE_SIZE, 'bytes');
       return {
         isValid: false,
-        error: `Archivo demasiado grande: ${(file.size / 1024 / 1024).toFixed(2)}MB. Máximo 10MB.`
+        error: `Archivo demasiado grande: ${(file.size / 1024 / 1024).toFixed(2)}MB. Máximo ${(this.MAX_FILE_SIZE/ 1024 / 1024).toFixed(2)} MB.`
       };
     }
 
@@ -296,7 +298,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
       if (this.userPhotoFile) {
         // Compress if needed
         const compressedUserPhoto = await this.compressImageFile(this.userPhotoFile, 2, 0.8);
-        console.log('User photo size after compression:', compressedUserPhoto.size, 'bytes');
+        // console.log('User photo size after compression:', compressedUserPhoto.size, 'bytes');
         const result = await this.fileToBase64WithFormat(compressedUserPhoto);
         profileBase64 = result.base64;
         profileFormat = result.format;
@@ -315,7 +317,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
       if (this.clothingFile) {
         // Compress if needed
         const compressedClothing = await this.compressImageFile(this.clothingFile, 2, 0.8);
-        console.log('Clothing image size after compression:', compressedClothing.size, 'bytes');
+        // console.log('Clothing image size after compression:', compressedClothing.size, 'bytes');
         const result = await this.fileToBase64WithFormat(compressedClothing);
         clothingBase64 = result.base64;
         clothingFormat = result.format;
@@ -538,7 +540,8 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
           (blob) => {
             if (blob) {
               const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
-              console.log('Compressed file size:', compressedFile.size, 'bytes');
+              // console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+              // console.log('Compressed file size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
               resolve(compressedFile);
             } else {
               reject(new Error('Compression failed'));

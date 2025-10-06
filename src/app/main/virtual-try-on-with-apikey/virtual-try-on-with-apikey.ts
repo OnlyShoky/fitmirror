@@ -124,9 +124,10 @@ export class VirtualTryOnWithApiKey implements OnInit, AfterViewInit {
     }
 
     if (file.size > this.MAX_FILE_SIZE) {
+      console.log('File size:', file.size, 'bytes');
       return {
         isValid: false,
-        error: `Archivo demasiado grande: ${(file.size / 1024 / 1024).toFixed(2)}MB. Máximo 10MB.`
+        error: `Archivo demasiado grande: ${(file.size / 1024 / 1024).toFixed(2)}MB. Máximo ${(this.MAX_FILE_SIZE/ 1024 / 1024).toFixed(2)} MB.`
       };
     }
 
