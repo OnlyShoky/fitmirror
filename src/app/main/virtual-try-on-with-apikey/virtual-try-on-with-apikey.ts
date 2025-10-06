@@ -324,8 +324,12 @@ export class VirtualTryOnWithApiKey implements OnInit, AfterViewInit {
       let profileBase64: string;
       let profileFormat: string;
       
+      // Procesar foto de usuario CON COMPRESIÓN
       if (this.userPhotoFile) {
-        const result = await this.fileToBase64WithFormat(this.userPhotoFile);
+        // Compress if needed - usando los mismos parámetros que en el primer archivo
+        const compressedUserPhoto = await this.compressImageFile(this.userPhotoFile, 2, 0.8);
+        console.log('User photo size after compression:', compressedUserPhoto.size, 'bytes');
+        const result = await this.fileToBase64WithFormat(compressedUserPhoto);
         profileBase64 = result.base64;
         profileFormat = result.format;
       } else if (this.hasPersistedPhoto && this.userPhotoPreview) {
@@ -339,8 +343,12 @@ export class VirtualTryOnWithApiKey implements OnInit, AfterViewInit {
       let clothingBase64: string;
       let clothingFormat: string;
 
+      // Procesar prenda de ropa CON COMPRESIÓN
       if (this.clothingFile) {
-        const result = await this.fileToBase64WithFormat(this.clothingFile);
+        // Compress if needed - usando los mismos parámetros que en el primer archivo
+        const compressedClothing = await this.compressImageFile(this.clothingFile, 2, 0.8);
+        console.log('Clothing image size after compression:', compressedClothing.size, 'bytes');
+        const result = await this.fileToBase64WithFormat(compressedClothing);
         clothingBase64 = result.base64;
         clothingFormat = result.format;
       } else if (this.clothingFromLink && this.clothingPreview) {
@@ -544,5 +552,39 @@ export class VirtualTryOnWithApiKey implements OnInit, AfterViewInit {
         alert('Please upload an image file (JPG, PNG, WEBP)');
       }
     }
+  }
+
+  // MÉTODO DE COMPRESIÓN AÑADIDO - igual que en el primer archivo
+  // Reduces image file size if needed (returns a new File or the original if small enough)
+  private async compressImageFile(file: File, maxSizeMB = 2, quality = 0.8): Promise<File> {
+    if (file.size <= maxSizeMB * 1024 * 1024) {
+      return file;
+    }
+    return new Promise<File>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+              console.log('Compressed file size:', compressedFile.size, 'bytes');
+              resolve(compressedFile);
+            } else {
+              reject(new Error('Compression failed'));
+            }
+          },
+          'image/jpeg',
+          quality
+        );
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
   }
 }
