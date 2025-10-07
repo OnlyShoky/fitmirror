@@ -115,7 +115,7 @@ exports.handler = async (event, context) => {
           'Content-Type': 'application/json',
           'x-freepik-api-key': finalApiKey
         },
-        timeout: 10000
+        timeout: 60000
       }
     );
 
@@ -130,7 +130,7 @@ exports.handler = async (event, context) => {
       attempts++;
       console.log(`Checking status (attempt ${attempts}, auth: ${authMode})...`);
       
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise(resolve => setTimeout(resolve, 10000));
       
       try {
         const statusResponse = await axios.get(
