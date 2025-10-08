@@ -20,6 +20,7 @@ export interface TranslationKeys {
   processing: string;
   resultTitle: string;
   generateAnother: string;
+  regenerate: string;
   downloadImage: string;
 
   // En tu translation.service.ts, añade estas propiedades al interface TranslationKeys:
@@ -99,7 +100,8 @@ export class TranslationService {
       tryOn: 'Try On',
       processing: 'Processing your virtual try-on...',
       resultTitle: 'Your Virtual Try-On Result',
-      generateAnother: 'Generate Another',
+      generateAnother: 'Try Another',
+      regenerate: 'Regenerate',
       downloadImage: 'Download Image',
 
       // ... traducciones existentes
@@ -174,6 +176,7 @@ export class TranslationService {
       processing: 'Procesando tu prueba virtual...',
       resultTitle: 'Resultado de tu Prueba Virtual',
       generateAnother: 'Generar Otro',
+      regenerate: 'Regenerar',
       downloadImage: 'Descargar Imagen',
 
       // ... traducciones existentes
@@ -247,6 +250,7 @@ export class TranslationService {
       processing: 'Traitement de votre essai virtuel...',
       resultTitle: 'Résultat de votre Essai Virtuel',
       generateAnother: 'Genérer un Autre',
+      regenerate: 'Regenérer',
       downloadImage: 'Télécharger l\'Image',
 
       apiKeyLabel: 'Votre clé API de Freepik',

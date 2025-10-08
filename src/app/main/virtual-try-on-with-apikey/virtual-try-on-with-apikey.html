@@ -96,29 +96,78 @@
 
         <!-- Try On Button -->
         <div class="try-on-container">
-            <button class="try-on-btn" [disabled]="tryOnBtnDisabled || !userApiKey" (click)="tryOn()">
-                {{ userApiKey ? translations().tryOn : (translations().enterApiKey || 'Enter API Key First') }}
+            <button class="try-on-btn" [disabled]="tryOnBtnDisabled" (click)="tryOn()">
+                <i class="fas fa-magic"></i>
+                {{ translations().tryOn }}
             </button>
-            <p class="api-key-required" *ngIf="!userApiKey">
-                ⚠️ {{ translations().apiKeyRequired || 'API key is required to proceed' }}
-            </p>
         </div>
 
-        <!-- Loading section -->
-        <div class="loading-container" *ngIf="loading">
-            <div class="spinner"></div>
-            <p class="loading-text">{{ translations().processing }}</p>
-            <p class="loading-subtext">{{ currentStatus }}</p>
+        <!-- Enhanced Loading Overlay -->
+        <div class="loading-overlay" *ngIf="loading" [class.active]="loading">
+            <div class="loading-content">
+                <div class="spinner-container">
+                    <div class="spinner"></div>
+                    <div class="spinner-ring"></div>
+                </div>
+                <h3 class="loading-title">{{ translations().processing }}</h3>
+                <p class="loading-subtitle">{{ currentStatus }}</p>
+                <div class="loading-progress">
+                    <div class="progress-bar" [style.width.%]="progress"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Result section -->
-        <div class="result-section" *ngIf="resultSectionVisible">
-            <h2 class="result-title">{{ translations().resultTitle }}</h2>
-            <img [src]="resultImage" class="result-image" [alt]="translations().resultTitle">
+        <!-- Enhanced Result Overlay -->
+        <div class="result-overlay" *ngIf="resultSectionVisible" [class.active]="resultSectionVisible">
+            <div class="result-content">
+                <div class="result-header">
+                    <h2 class="result-title">{{ translations().resultTitle }}</h2>
+                    <button class="close-btn" (click)="closeResult()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="result-image-container">
+                    <img [src]="resultImage" class="result-image" [alt]="translations().resultTitle" #resultImg>
+                    
+                    <div class="image-actions" *ngIf="resultImage">
+                        <button class="action-btn fullscreen-btn" (click)="openFullscreen()" title="View Fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button class="action-btn download-btn" (click)="downloadResult()" title="Download Image">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
 
-            <div class="result-actions">
-                <button class="try-on-btn" (click)="tryOn()">{{ translations().generateAnother }}</button>
-                <button class="download-btn" (click)="downloadResult()">{{ translations().downloadImage }}</button>
+                <div class="result-actions">
+                    <button class="try-on-btn" (click)="closeResult()">
+                        <i class="fas fa-edit"></i>
+                        {{ translations().generateAnother || 'Modify Selection' }}
+                    </button>
+                    <button class="try-on-btn secondary" (click)="tryOn()">
+                        <i class="fas fa-redo"></i>
+                        {{ translations().regenerate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fullscreen Modal -->
+        <div class="fullscreen-modal" *ngIf="fullscreenVisible" [class.active]="fullscreenVisible">
+            <div class="fullscreen-header">
+                <h3>Virtual Try-On Result</h3>
+                <div class="fullscreen-actions">
+                    <button class="action-btn" (click)="downloadResult()" title="Download">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="action-btn close-btn" (click)="closeFullscreen()" title="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="fullscreen-content">
+                <img [src]="resultImage" class="fullscreen-image" [alt]="translations().resultTitle">
             </div>
         </div>
     </div>

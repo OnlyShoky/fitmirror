@@ -25,13 +25,17 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
   replaceClothingVisible: boolean = false;
   clothingLink: string = '';
   clothingFile: File | null = null;
-  clothingFromLink: boolean = false; // Nueva propiedad para trackear si la ropa viene de un link
+  clothingFromLink: boolean = false;
 
   // Try On
   tryOnBtnDisabled: boolean = true;
   loading: boolean = false;
   resultSectionVisible: boolean = false;
-  resultImage: string | null = null;
+  resultImage: string | null =  null;
+
+  // New enhanced properties
+  progress: number = 0;
+  fullscreenVisible: boolean = false;
 
   // Status
   currentStatus: string = '';
@@ -125,7 +129,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
 
       // Comprimir imagen antes de procesar
       try {
-        const compressedFile = await this.compressImageFile(file, 1, 0.7); // Más compresión para almacenamiento
+        const compressedFile = await this.compressImageFile(file, 1, 0.7);
         this.userPhotoFile = compressedFile;
 
         const reader = new FileReader();
@@ -193,7 +197,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
       try {
         const compressedFile = await this.compressImageFile(file, 1, 0.7);
         this.clothingFile = compressedFile;
-        this.clothingFromLink = false; // No es de un link
+        this.clothingFromLink = false;
 
         const reader = new FileReader();
         reader.onload = (e: any) => {
@@ -243,7 +247,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         this.clothingUploadVisible = false;
         this.replaceClothingVisible = true;
         this.clothingFile = null;
-        this.clothingFromLink = true; // Marcamos que viene de un link
+        this.clothingFromLink = true;
         this.checkTryOnButton();
         this.currentStatus = '';
         
@@ -261,7 +265,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
   private urlToBase64(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = 'Anonymous'; // Permite CORS para imágenes externas
+      img.crossOrigin = 'Anonymous';
       
       img.onload = () => {
         const canvas = document.createElement('canvas');
@@ -273,8 +277,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         ctx?.drawImage(img, 0, 0);
         
         try {
-          // Convertir a base64
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.9); // Convertir a JPEG con 90% calidad
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
           const base64 = dataUrl.split(',')[1];
           resolve(base64);
         } catch (error) {
@@ -288,7 +291,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
       
       img.src = url;
       
-      // Si la imagen está en caché, forzar la carga
       if (img.complete || img.complete === undefined) {
         img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
         img.src = url;
@@ -316,7 +318,16 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     this.loading = true;
     this.resultSectionVisible = false;
     this.resultImage = null;
+    this.progress = 0;
     this.currentStatus = 'Validando y procesando imágenes...';
+
+    // Simulate progress updates
+    const progressInterval = setInterval(() => {
+      this.progress += Math.random() * 15;
+      if (this.progress >= 90) {
+        clearInterval(progressInterval);
+      }
+    }, 500);
 
     try {
       let profileBase64: string;
@@ -324,7 +335,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
 
       // Procesar foto de usuario
       if (this.userPhotoFile) {
-        // Compress if needed - usar compresión más agresiva para envío
         const compressedUserPhoto = await this.compressImageFile(this.userPhotoFile, 2, 0.8);
         const result = await this.fileToBase64WithFormat(compressedUserPhoto);
         profileBase64 = result.base64;
@@ -340,9 +350,8 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
       let clothingBase64: string;
       let clothingFormat: string;
 
-      // Procesar prenda de ropa - AHORA MANEJA AMBOS CASOS
+      // Procesar prenda de ropa
       if (this.clothingFile) {
-        // Compress if needed - usar compresión más agresiva para envío
         const compressedClothing = await this.compressImageFile(this.clothingFile, 2, 0.8);
         const result = await this.fileToBase64WithFormat(compressedClothing);
         clothingBase64 = result.base64;
@@ -355,11 +364,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         throw new Error('No clothing image available');
       }
 
-      // console.log('Formatos detectados:', {
-      //   profile: profileFormat,
-      //   clothing: clothingFormat
-      // });
-
       this.currentStatus = 'Creando tarea de generación...';
 
       const request: TryOnRequest = {
@@ -371,13 +375,13 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         next: (response) => {
           if (response.success && response.url) {
             this.resultImage = response.url;
-            this.resultSectionVisible = true;
-            this.currentStatus = 'Generación completada!';
+            this.progress = 100;
             
             setTimeout(() => {
-              const resultSection = document.querySelector('.result-section');
-              resultSection?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+              this.loading = false;
+              this.resultSectionVisible = true;
+              this.currentStatus = 'Generación completada!';
+            }, 500);
           } else {
             this.currentStatus = `Error: ${response.error}`;
             alert(`Generation failed: ${response.error}`);
@@ -386,8 +390,9 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         error: (error) => {
           console.error('API Error:', error);
           this.currentStatus = `Error: ${error.message}`;
+          this.loading = false;
+          clearInterval(progressInterval);
           
-          // Mensajes de error más específicos
           if (error.status === 0) {
             alert('Error de conexión. Verifique su conexión a internet e intente nuevamente.');
           } else if (error.status === 413) {
@@ -397,7 +402,7 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
           }
         },
         complete: () => {
-          this.loading = false;
+          clearInterval(progressInterval);
         }
       });
 
@@ -405,9 +410,72 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
       console.error('Error processing images:', error);
       this.loading = false;
       this.currentStatus = 'Error procesando imágenes';
+      clearInterval(progressInterval);
       alert('Error processing images. Please check your photos and try again.');
     }
   }
+
+  // New enhanced methods
+  closeResult() {
+    this.resultSectionVisible = false;
+    this.resultImage = null;
+  }
+
+  openFullscreen() {
+    this.fullscreenVisible = true;
+  }
+
+  closeFullscreen() {
+    this.fullscreenVisible = false;
+  }
+
+  // Enhanced download method
+  // Enhanced download method
+  async downloadResult() {
+    if (!this.resultImage) return;
+
+    try {
+      // If it's already a data URL, download directly
+      if (this.resultImage.startsWith('data:')) {
+        this.downloadDataUrl(this.resultImage, 'virtual-try-on-result.jpg');
+        return;
+      }
+
+      // If it's a URL, fetch and convert to blob
+      const response = await fetch(this.resultImage);
+      if (!response.ok) {
+        throw new Error('Failed to fetch image');
+      }
+      
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `virtual-try-on-${new Date().getTime()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the object URL
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download image. Please try again.');
+    }
+  }
+
+  // Helper method to download data URLs
+  private downloadDataUrl(dataUrl: string, filename: string) {
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
 
   // Método mejorado para convertir a base64 con información de formato
   private fileToBase64WithFormat(file: File): Promise<{ base64: string; format: string }> {
@@ -430,22 +498,13 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
       throw new Error('Formato Data URL inválido');
     }
     
-    const format = matches[1]; // jpeg, png, webp, etc.
+    const format = matches[1];
     const base64 = matches[2];
     
     return { base64, format };
   }
 
-  downloadResult() {
-    if (this.resultImage) {
-      const link = document.createElement('a');
-      link.href = this.resultImage;
-      link.download = 'virtual-try-on-result.jpg';
-      link.click();
-    }
-  }
-
-  // Drag and Drop (actualizado con compresión)
+  // Drag and Drop
   setupDragAndDrop() {
     this.setupSingleDragAndDrop(
       'userPhotoUpload',
@@ -458,7 +517,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         }
         
         try {
-          // Comprimir imagen en drag & drop también
           const compressedFile = await this.compressImageFile(file, 1, 0.7);
           const reader = new FileReader();
           reader.onload = (e: any) => {
@@ -488,7 +546,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         }
         
         try {
-          // Comprimir imagen en drag & drop también
           const compressedFile = await this.compressImageFile(file, 1, 0.7);
           const reader = new FileReader();
           reader.onload = (e: any) => {
@@ -555,36 +612,32 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     if (files.length > 0) {
       const file = files[0];
       if (file.type.match('image.*')) {
-        onSuccess('', file); // Pasamos el file directamente para compresión
+        onSuccess('', file);
       } else {
         alert('Please upload an image file (JPG, PNG, WEBP)');
       }
     }
   }
 
-  // NUEVO MÉTODO: Guardar foto de usuario comprimida
+  // Guardar foto de usuario comprimida
   private saveCompressedUserPhoto(dataUrl: string) {
     try {
-      // Crear una versión más pequeña para almacenamiento
       this.createThumbnailForStorage(dataUrl).then((compressedDataUrl) => {
         localStorage.setItem('myramyrrorUserPhoto', compressedDataUrl);
       }).catch(() => {
-        // Si falla la compresión, no guardar nada
         localStorage.removeItem('myramyrrorUserPhoto');
       });
     } catch (error) {
-      // Si hay error de cuota, limpiar storage viejo
       this.clearOldStorage();
     }
   }
 
-  // NUEVO MÉTODO: Crear miniatura para almacenamiento
+  // Crear miniatura para almacenamiento
   private createThumbnailForStorage(dataUrl: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        // Tamaño muy pequeño para almacenamiento (max 400px)
         const maxSize = 400;
         let { width, height } = img;
         
@@ -606,7 +659,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, width, height);
         
-        // Calidad muy baja para almacenamiento
         const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
         resolve(compressedDataUrl);
       };
@@ -615,19 +667,17 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
     });
   }
 
-  // NUEVO MÉTODO: Limpiar storage viejo
+  // Limpiar storage viejo
   private clearOldStorage() {
     try {
       localStorage.removeItem('myramyrrorUserPhoto');
-      // Puedes añadir más items para limpiar si es necesario
     } catch (error) {
       console.error('Error clearing storage:', error);
     }
   }
 
-  // Método de compresión MEJORADO
+  // Método de compresión
   private async compressImageFile(file: File, maxSizeMB = 2, quality = 0.8): Promise<File> {
-    // Si el archivo ya es pequeño, no comprimir
     if (file.size <= maxSizeMB * 1024 * 1024) {
       return file;
     }
@@ -637,9 +687,8 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         
-        // Calcular nuevas dimensiones manteniendo aspect ratio
         let { width, height } = img;
-        const maxDimension = 1200; // Máximo ancho/alto
+        const maxDimension = 1200;
         
         if (width > height) {
           if (width > maxDimension) {
@@ -666,8 +715,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
                 type: 'image/jpeg',
                 lastModified: new Date().getTime()
               });
-              // console.log('Original size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
-              // console.log('Compressed size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
               resolve(compressedFile);
             } else {
               reject(new Error('Compression failed'));
@@ -678,7 +725,6 @@ export class VirtualTryOn implements OnInit, AfterViewInit {
         );
       };
       img.onerror = () => {
-        // Si falla la compresión, devolver el archivo original
         console.warn('Compression failed, using original file');
         resolve(file);
       };
