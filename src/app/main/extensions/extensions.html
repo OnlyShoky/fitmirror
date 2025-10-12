@@ -1,0 +1,27 @@
+<section class="extensions-section" id="extensions">
+  <div class="container">
+    <div class="extensions-container">
+      <h2 class="extensions-title">{{ translations().extensionsTitle }}</h2>
+      <p class="extensions-subtitle">
+        {{ translations().extensionsSubtitle }}
+      </p>
+      
+      <div class="extensions-grid">
+        <!-- Use extensions() since it's now a computed signal -->
+        <div class="extension-card" *ngFor="let extension of extensions()">
+          <div class="card-header">
+            <div class="extension-icon">
+              <i [class]="extension.icon"></i>
+            </div>
+            <h3 class="extension-title">{{ extension.name }}</h3>
+          </div>
+          <button class="extension-btn" 
+                  (click)="openExtensionStore(extension.link)">
+            <i [class]="extension.icon"></i>
+            {{ extension.buttonText }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

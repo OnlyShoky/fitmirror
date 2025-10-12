@@ -8,6 +8,7 @@ export interface TranslationKeys {
   navFeatures: string;
   navSupport: string;
   getStarted: string;
+  navExtensions: string;
 
   // Main Section
   howTitle: string;
@@ -32,6 +33,16 @@ export interface TranslationKeys {
   apiKeyInfoMessage: string;
   apiKeyRequired: string;
   enterApiKey: string;
+
+  // Extensions Section
+  extensionsTitle: string;
+  extensionsSubtitle: string;
+  chromeExtension: string;
+  firefoxExtension: string;
+  addToChrome: string;
+  addToFirefox: string;
+  extensionDesc1: string;
+  extensionDesc2: string;
 
   // Features
   whyTitle: string;
@@ -89,6 +100,7 @@ export class TranslationService {
       navFeatures: 'Features',
       navSupport: 'Support',
       getStarted: 'Get Started',
+      navExtensions: 'Extensions',
 
       // Main Section
       howTitle: 'Virtual Try-On',
@@ -119,6 +131,18 @@ export class TranslationService {
         'Your API key is stored locally in your browser and never shared with us.',
       apiKeyRequired: 'API key is required to proceed',
       enterApiKey: 'Enter API Key First',
+
+
+      //Extensions section
+      extensionsTitle: 'Browser Extensions',
+      extensionsSubtitle: 'Enhance your shopping experience with our browser extensions.',
+      chromeExtension: 'Chrome Extension',
+      firefoxExtension: 'Firefox Extension',
+      addToChrome: 'Add to Chrome',
+      addToFirefox: 'Add to Firefox',
+      extensionDesc1: 'Seamlessly integrate MyraMyrror with your Chrome browser for instant virtual try-ons while shopping online.',
+      extensionDesc2: 'Get the same great MyraMyrror experience in Firefox with our dedicated browser extension.',
+
 
 
       // Features
@@ -164,6 +188,7 @@ export class TranslationService {
       navFeatures: 'Características',
       navSupport: 'Soporte',
       getStarted: 'Comenzar',
+      navExtensions: 'Extensiones',
 
       // Main Section
       howTitle: 'Prueba Virtual',
@@ -194,6 +219,16 @@ export class TranslationService {
         'Tu API key se almacena localmente en tu navegador y nunca se comparte con nosotros.',
       apiKeyRequired: 'Se requiere API key para continuar',
       enterApiKey: 'Ingresa API Key Primero',
+
+      //Extensions section
+      extensionsTitle: 'Extensiones de Navegador',
+      extensionsSubtitle: 'Mejora tu experiencia de compra con nuestras extensiones de navegador.',
+      chromeExtension: 'Extensión de Chrome',
+      firefoxExtension: 'Extensión de Firefox',
+      addToChrome: 'Agregar a Chrome',
+      addToFirefox: 'Agregar a Firefox',
+      extensionDesc1: 'Integra MyraMyrror perfectamente con tu navegador Chrome para pruebas virtuales instantáneas mientras compras en línea.',
+      extensionDesc2: 'Obtén la misma gran experiencia de MyraMyrror en Firefox con nuestra extensión de navegador dedicada.',
 
       // Features
       whyTitle: 'Por Qué Elegir MyraMyrror',
@@ -238,6 +273,7 @@ export class TranslationService {
       navFeatures: 'Fonctionnalités',
       navSupport: 'Support',
       getStarted: 'Commencer',
+      navExtensions: 'Extensions',
 
       // Main Section
       howTitle: 'Essai Virtuel',
@@ -267,6 +303,16 @@ export class TranslationService {
         'Votre clé API est stockée localement dans votre navigateur et n\'est jamais partagée avec nous.',
       apiKeyRequired: 'Une clé API est requise pour continuer',
       enterApiKey: 'Entrez votre clé API d\'abord',
+
+      //Extensions section
+      extensionsTitle: 'Extensions de Navigateur',
+      extensionsSubtitle: 'Améliorez votre expérience d\'achat avec nos extensions de navigateur.',
+      chromeExtension: 'Extension Chrome',
+      firefoxExtension: 'Extension Firefox',
+      addToChrome: 'Ajouter à Chrome',
+      addToFirefox: 'Ajouter à Firefox',
+      extensionDesc1: 'Intégrez MyraMyrror de manière transparente à votre navigateur Chrome pour des essais virtuels instantanés lors de vos achats en ligne.',
+      extensionDesc2: 'Obtenez la même excellente expérience MyraMyrror sur Firefox avec notre extension de navigateur dédiée.',
 
 
       // Features
